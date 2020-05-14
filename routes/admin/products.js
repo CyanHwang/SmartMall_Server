@@ -9,7 +9,7 @@ module.exports = (app) => {
     const currentPage =
       req.param("currentPage") == undefined ? 1 : req.param("currentPage"); //判断当前是第几页
     const pageSize =
-      req.param("pageSize") == undefined ? 3 : req.param("pageSize"); //每页显示几条
+      req.param("pageSize") == undefined ? 5 : req.param("pageSize"); //每页显示几条
 
     //按商品名称模糊搜索
     const keyword = req.query.keyword;
@@ -69,7 +69,7 @@ module.exports = (app) => {
   // 编辑商品
   router.put("/:id", async (req, res) => {
     const data = await models.Product.findByPk(req.params.id);
-    product.update(req.body);
+    data.update(req.body);
     res.json(data);
   });
 

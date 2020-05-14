@@ -7,7 +7,7 @@ module.exports = (app) => {
   const bcrypt = require("bcryptjs");
 
   //登录接口
-  router.post("/login", async (req, res) => {
+  router.post("/sign-in", async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
 
@@ -50,9 +50,9 @@ module.exports = (app) => {
     });
   });
 
-  router.post("/register", async (req, res) => {
+  router.post("/sign-up", async (req, res) => {
     const username = req.body.username;
-    const password = req.body.password;
+    let password = req.body.password;
     const check_password = req.body.check_password;
 
     if (!req.body.username || !req.body.password) {
@@ -70,19 +70,27 @@ module.exports = (app) => {
         username: username,
       },
     });
+
     if (data) {
       res.json({ success: false, message: "用户名已注册！" });
       return;
     }
     password = bcrypt.hashSync(password, 8);
-    let user = await models.User.create({
+
+    const model = await models.User.create({
       username: username,
       password: password,
+      admin: true,
     });
+    const token = jwt.sign(
+      { user: { id: model.id, username: model.username, admin: model.admin } },
+      process.env.SECRET,
+      { expiresIn: 60 * 60 * 24 * 7 }
+    );
     res.json({
       success: true,
-      message: "请求成功",
-      user: user,
+      message: "注册成功",
+      token: token,
     });
   });
 

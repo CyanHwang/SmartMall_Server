@@ -6,6 +6,7 @@ const logger = require("morgan");
 
 const app = express();
 app.use(require('cors')());
+require('dotenv').config()
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
